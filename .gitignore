@@ -193,3 +193,13 @@ coverage/
 # Production build
 build/
 dist/
+
+data/processed/
+data/train/
+data/test/
+data/val/
+data/
+
+
+
+
