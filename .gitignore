@@ -200,15 +200,138 @@ data/test/
 data/val/
 data/
 
-.png
-.jpeg
-.jpg
-.gif
-.webp
-.svg
-.ico
-.bmp
-.tiff
+# Image files - Fixed syntax (removed leading dots)
+*.png
+*.jpeg
+*.jpg
+*.gif
+*.webp
+*.svg
+*.ico
+*.bmp
+*.tiff
+
+# MODEL FILES - Large files that should not be in Git
+# PyTorch model files
+*.pt
+*.pth
+*.ckpt
+
+# TensorFlow model files
+*.pb
+*.h5
+*.keras
+
+# ONNX model files
+*.onnx
+
+# Large model directories
+models/
+model_weights/
+checkpoints/
+pretrained/
+
+# Specific large model files mentioned in error
+yolov8x.pt
+models/easyocr/craft_mlt_25k.pth
+
+# Python cache and compiled files
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Dataset files (often large)
+*.csv
+*.parquet
+*.h5
+*.hdf5
+*.npy
+*.npz
+
+# Video and audio files
+*.mp4
+*.avi
+*.mov
+*.wmv
+*.flv
+*.webm
+*.mp3
+*.wav
+*.flac
+
+# Archive files
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+
+# Log files
+*.log
+logs/
+
+# PDF files (often large documents)
+*.pdf
+
+# Large text files
+*.txt
+!requirements.txt
+!README.txt
+
+# Backup and temporary files
+*~
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# System files
+.directory
+desktop.ini
+
+# Documentation build artifacts
+docs/_build/
+docs/build/
+site/
+
+# Virtual environment directories
+venv*/
+.venv*/
+env*/
+.env*/
+
+# Configuration files with secrets
+config.ini
+settings.json
+.config
+
+# Output directories
+output/
+outputs/
+results/
+demo_output/
+
+# Test output files
+test_output/
+test_results/
+
+# Cache directories
+.cache/
+cache/
+.mypy_cache/
+.ruff_cache/
+
+# Profiling output
+*.prof
+*.lprof
+
+# IDE and editor files
+*.sublime-*
+.vimrc
+.nvimrc
 
 
 
