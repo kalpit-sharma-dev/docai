@@ -200,6 +200,15 @@ data/test/
 data/val/
 data/
 
+.png
+.jpeg
+.jpg
+.gif
+.webp
+.svg
+.ico
+.bmp
+.tiff
 
 
 
