@@ -1,0 +1,127 @@
+{
+  "page": 1,
+  "size": {
+    "w": 800,
+    "h": 1200
+  },
+  "elements": [],
+  "preprocess": {
+    "deskew_angle": -90.0
+  },
+  "text_lines": [
+    {
+      "bbox": [
+        0,
+        0,
+        800,
+        120
+      ],
+      "text": "Sample text line 1",
+      "lang": "en",
+      "score": 0.95
+    },
+    {
+      "bbox": [
+        0,
+        120,
+        800,
+        120
+      ],
+      "text": "Sample text line 2",
+      "lang": "en",
+      "score": 0.95
+    },
+    {
+      "bbox": [
+        0,
+        240,
+        800,
+        120
+      ],
+      "text": "Sample text line 3",
+      "lang": "en",
+      "score": 0.95
+    },
+    {
+      "bbox": [
+        0,
+        360,
+        800,
+        120
+      ],
+      "text": "Sample text line 4",
+      "lang": "en",
+      "score": 0.95
+    },
+    {
+      "bbox": [
+        0,
+        480,
+        800,
+        120
+      ],
+      "text": "Sample text line 5",
+      "lang": "en",
+      "score": 0.95
+    },
+    {
+      "bbox": [
+        0,
+        600,
+        800,
+        120
+      ],
+      "text": "Sample text line 6",
+      "lang": "en",
+      "score": 0.95
+    },
+    {
+      "bbox": [
+        0,
+        720,
+        800,
+        120
+      ],
+      "text": "Sample text line 7",
+      "lang": "en",
+      "score": 0.95
+    },
+    {
+      "bbox": [
+        0,
+        840,
+        800,
+        120
+      ],
+      "text": "Sample text line 8",
+      "lang": "en",
+      "score": 0.95
+    },
+    {
+      "bbox": [
+        0,
+        960,
+        800,
+        120
+      ],
+      "text": "Sample text line 9",
+      "lang": "en",
+      "score": 0.95
+    },
+    {
+      "bbox": [
+        0,
+        1080,
+        800,
+        120
+      ],
+      "text": "Sample text line 10",
+      "lang": "en",
+      "score": 0.95
+    }
+  ],
+  "tables": [],
+  "figures": [],
+  "charts": [],
+  "maps": []
+}

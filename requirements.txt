@@ -1,0 +1,53 @@
+# Core ML/DL frameworks
+torch>=2.0.0
+torchvision>=0.15.0
+transformers>=4.30.0
+datasets>=2.12.0
+accelerate>=0.20.0
+
+# Computer Vision
+opencv-python>=4.8.0
+albumentations>=1.3.0
+Pillow>=9.5.0
+scikit-image>=0.21.0
+
+# Data Processing
+numpy>=1.24.0
+pandas>=2.0.0
+scipy>=1.10.0
+
+# Web Framework
+fastapi>=0.100.0
+uvicorn>=0.23.0
+python-multipart>=0.0.6
+
+# Configuration & Utilities
+pyyaml>=6.0
+click>=8.1.0
+tqdm>=4.65.0
+matplotlib>=3.7.0
+seaborn>=0.12.0
+
+# OCR & Text Processing
+easyocr>=1.7.0
+pytesseract>=0.3.10
+langdetect>=1.0.9
+# polyglot>=16.7.4  # Optional: May fail on Windows due to encoding issues
+
+# Evaluation Metrics
+pycocotools>=2.0.6
+jiwer>=3.0.0
+sacrebleu>=2.3.0
+bert-score>=0.3.13
+
+# Development & Testing
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.0.0
+flake8>=6.0.0
+isort>=5.12.0
+
+# Additional Dependencies
+ultralytics>=8.0.0
+requests>=2.31.0
+psutil>=5.9.0

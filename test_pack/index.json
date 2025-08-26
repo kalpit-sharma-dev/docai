@@ -1,0 +1,9 @@
+{
+  "files": [
+    {
+      "image": "sample_document.png",
+      "json": "json/sample_document.json"
+    }
+  ],
+  "stage": 3
+}
