@@ -5,11 +5,11 @@ A production-ready, multilingual, layout-aware document understanding system tha
 ## 🚀 Features
 
 ### Core Capabilities
-- **Layout Detection**: 6-class detection (Background, Text, Title, List, Table, Figure)
-- **Multilingual OCR**: Support for 6 languages with mixed script handling
-- **Language Identification**: Automatic language detection with confidence scoring
-- **Natural Language Generation**: Descriptions for tables, charts, maps, and images
-- **JSON Output**: Structured output with bounding boxes and metadata
+- **Layout Detection**: 6-class detection (Background, Text, Title, List, Table, Figure) ✅ **STAGE 1 COMPLETE**
+- **Multilingual OCR**: Support for 6 languages with mixed script handling ✅ **STAGE 2 COMPLETE**
+- **Language Identification**: Automatic language detection with confidence scoring ✅ **STAGE 2 COMPLETE**
+- **Natural Language Generation**: Descriptions for tables, charts, maps, and images ✅ **STAGE 3 COMPLETE**
+- **JSON Output**: Structured output with bounding boxes and metadata ✅ **IMPLEMENTED**
 
 ### Supported Languages
 - **English (en)**: Latin script
@@ -20,9 +20,11 @@ A production-ready, multilingual, layout-aware document understanding system tha
 - **Persian (fa)**: Arabic script with Persian-specific characters
 
 ### Processing Stages
-- **Stage 1**: Layout detection with mAP ≥0.5 IoU
-- **Stage 2**: + OCR and language identification
-- **Stage 3**: + Natural language descriptions for complex elements
+- **Stage 1**: Layout detection with mAP ≥0.5 IoU ✅ **COMPLETE & READY FOR SUBMISSION**
+- **Stage 2**: + OCR and language identification ✅ **COMPLETE & READY FOR SUBMISSION**
+- **Stage 3**: + Natural language descriptions for complex elements ✅ **COMPLETE & READY FOR SUBMISSION**
+
+**🎯 STAGE 1 DEADLINE: 5 November 2025**
 
 ## 📂 Project Structure
 
@@ -95,6 +97,88 @@ pip install -r requirements.txt
 ```bash
 python ps05.py --help
 ```
+
+## 🎯 Stage Status
+
+### Stage 1: Document Layout Detection
+✅ **COMPLETE & READY FOR SUBMISSION**
+
+**Stage 1 of PS-05 is COMPLETE and ready for the 5 November 2025 submission deadline.**
+
+#### ✅ What's Implemented
+- **Layout Detection Model**: YOLOv8-based detector for 6 layout classes
+- **Dataset Preparation**: Scripts to convert annotations to YOLO format  
+- **Training Pipeline**: Complete training workflow with validation
+- **Evaluation**: mAP calculation at IoU threshold >= 0.5
+- **Inference Pipeline**: Ready-to-use layout detection
+- **Testing**: Comprehensive test suite
+
+#### 🚀 Quick Start for Stage 1
+```bash
+# Test the implementation
+python test_stage1.py
+
+# Train the model
+python scripts/train_stage1.py --data data/train --output outputs/stage1
+
+# Run inference
+python ps05.py infer --input test_image.png --output results/ --stage 1
+```
+
+#### 📋 Stage 1 Requirements Met
+- ✅ **Input**: JPEG/PNG document images (handles rotated/blurred/noisy)
+- ✅ **Output**: JSON with bbox [x,y,w,h] and 6 classes
+- ✅ **Classes**: Background, Text, Title, List, Table, Figure
+- ✅ **Evaluation**: mAP at bbox threshold >= 0.5
+- ✅ **Format**: Machine-friendly JSON output
+
+**📖 For detailed Stage 1 documentation, see [STAGE1_README.md](STAGE1_README.md)**
+
+### Stage 2: Multilingual OCR and Language Understanding
+✅ **COMPLETE & READY FOR SUBMISSION**
+
+#### ✅ What's Implemented
+- **Multilingual OCR**: Support for 6 languages with EasyOCR and TrOCR
+- **Language Detection**: Ensemble-based detection with precision/recall metrics
+- **Text Extraction**: CER/WER evaluation metrics
+- **Visual Element Understanding**: Charts, maps, and tables to natural language
+- **Evaluation Metrics**: BlueRT + BertScore for charts/maps, T2T-Gen for tables
+- **Production Pipeline**: Integrated Stage 2 pipeline with comprehensive evaluation
+
+#### 🚀 Quick Start for Stage 2
+```bash
+# Test Stage 2 functionality
+python test_stage2_stage3.py
+
+# Run Stage 2 inference
+python ps05.py infer --input document.pdf --output results/ --stage 2
+```
+
+**📖 For detailed Stage 2 documentation, see [STAGE2_STAGE3_README.md](STAGE2_STAGE3_README.md)**
+
+### Stage 3: Advanced Natural Language Generation
+✅ **COMPLETE & READY FOR SUBMISSION**
+
+#### ✅ What's Implemented
+- **Enhanced Visual Descriptions**: Context-aware descriptions using surrounding text
+- **Semantic Analysis**: Document structure, content complexity, and multilingual analysis
+- **Cross-Reference Detection**: Relationships between document elements
+- **Document Summarization**: Executive summary, key insights, and recommendations
+- **Advanced Language Understanding**: Complex element processing and context integration
+- **Production Pipeline**: Complete Stage 3 pipeline extending Stage 2 functionality
+
+#### 🚀 Quick Start for Stage 3
+```bash
+# Test Stage 3 functionality
+python test_stage2_stage3.py
+
+# Run Stage 3 inference
+python ps05.py infer --input document.pdf --output results/ --stage 3
+```
+
+**📖 For detailed Stage 3 documentation, see [STAGE2_STAGE3_README.md](STAGE2_STAGE3_README.md)**
+
+---
 
 ## 🏋️ Usage
 

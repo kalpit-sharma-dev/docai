@@ -314,7 +314,7 @@ def process_batch(image_paths: List[str], config_path: str = "configs/ps05_confi
             
             results.append(result)
             
-    except Exception as e:
+        except Exception as e:
             logger.error(f"Error processing {image_path}: {e}")
             results.append({"error": str(e), "file": image_path})
     
