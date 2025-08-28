@@ -1,0 +1,45 @@
+# Minimal PS-05 Dockerfile for basic functionality
+FROM python:3.9-slim-bullseye
+
+ENV PYTHONUNBUFFERED=1
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install minimal dependencies including OpenGL libraries for OpenCV
+RUN apt-get update && apt-get install -y \
+    curl \
+    wget \
+    libgl1 \
+    libglib2.0-0 \
+    libsm6 \
+    libxext6 \
+    libxrender1 \
+    libgomp1 \
+    libglib2.0-0 \
+    libfontconfig1 \
+    libjpeg62-turbo \
+    libpng16-16 \
+    libtiff5 \
+    libglu1-mesa \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Copy competition requirements (has FastAPI dependencies)
+COPY requirements.competition.txt ./requirements.txt
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
+
+# Copy application
+COPY . .
+
+# Create directories
+RUN mkdir -p /app/data /app/models /app/outputs /app/logs /app/uploads
+
+# Set permissions
+RUN chmod +x /app/ps05.py
+
+EXPOSE 8000
+
+CMD ["python", "ps05.py", "server", "--host", "0.0.0.0", "--port", "8000"]

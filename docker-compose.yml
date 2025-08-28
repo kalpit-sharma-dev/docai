@@ -1,11 +1,9 @@
-version: '3.8'
-
 services:
   # PS-05 Backend Service (FastAPI + ML Pipeline)
   ps05-backend:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.minimal
     container_name: ps05-document-ai-backend
     ports:
       - "8000:8000"

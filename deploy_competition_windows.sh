@@ -1,12 +1,12 @@
 #!/bin/bash
 
-# PS-05 Competition Deployment Script
-# This script deploys the complete PS-05 system for competition evaluation
+# PS-05 Competition Deployment Script for Windows
+# This script deploys the complete PS-05 system for competition evaluation on Windows
 
 set -e
 
-echo "🚀 PS-05 Competition Deployment Starting..."
-echo "=========================================="
+echo "🚀 PS-05 Competition Deployment Starting (Windows)..."
+echo "===================================================="
 
 # Colors for output
 RED='\033[0;31m'
@@ -38,11 +38,6 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
-# Check if running on Windows
-is_windows() {
-    [[ "$OSTYPE" == "msys" ]] || [[ "$OSTYPE" == "cygwin" ]] || [[ "$OSTYPE" == "win32" ]]
-}
-
 # Check system requirements
 check_requirements() {
     print_status "Checking system requirements..."
@@ -50,23 +45,35 @@ check_requirements() {
     # Check Docker
     if ! command -v docker &> /dev/null; then
         print_error "Docker is not installed. Please install Docker Desktop first."
+        print_status "Download from: https://www.docker.com/products/docker-desktop"
         exit 1
     fi
     
     # Check Docker Compose
     if ! command -v docker-compose &> /dev/null; then
         print_error "Docker Compose is not installed. Please install Docker Compose first."
+        print_status "Docker Desktop usually includes Docker Compose"
         exit 1
     fi
     
     # Check if Docker Desktop is running
+    print_status "Checking if Docker Desktop is running..."
     if ! docker system info &> /dev/null; then
-        print_error "Docker Desktop is not running. Please start Docker Desktop first."
-        print_status "On Windows: Look for Docker Desktop icon in system tray and start it"
-        print_status "On macOS: Open Docker Desktop application"
-        print_status "On Linux: Start Docker service with 'sudo systemctl start docker'"
+        print_error "Docker Desktop is not running!"
+        echo ""
+        echo "🔧 To fix this:"
+        echo "1. Look for Docker Desktop icon in your system tray (bottom right)"
+        echo "2. If not there, search for 'Docker Desktop' in Start menu"
+        echo "3. Start Docker Desktop and wait for it to fully load"
+        echo "4. You should see a green Docker icon in system tray when ready"
+        echo ""
+        echo "⏳ Wait for Docker Desktop to fully start (may take 1-2 minutes)"
+        echo "Then run this script again."
+        echo ""
         exit 1
     fi
+    
+    print_success "Docker Desktop is running and accessible."
     
     # Check GPU support
     if command -v nvidia-smi &> /dev/null; then
@@ -77,31 +84,16 @@ check_requirements() {
         GPU_ENABLED=false
     fi
     
-    # Check available memory (cross-platform)
-    if is_windows; then
-        # Windows - use wmic if available, otherwise skip
-        if command -v wmic &> /dev/null; then
-            MEMORY_GB=$(wmic computersystem get TotalPhysicalMemory | tail -1 | awk '{print int($1/1024/1024/1024)}')
-            if [ "$MEMORY_GB" -lt 8 ]; then
-                print_warning "System has less than 8GB RAM. Performance may be limited."
-            else
-                print_success "System memory: ${MEMORY_GB}GB"
-            fi
+    # Check available memory (Windows)
+    if command -v wmic &> /dev/null; then
+        MEMORY_GB=$(wmic computersystem get TotalPhysicalMemory | tail -1 | awk '{print int($1/1024/1024/1024)}')
+        if [ "$MEMORY_GB" -lt 8 ]; then
+            print_warning "System has less than 8GB RAM (${MEMORY_GB}GB). Performance may be limited."
         else
-            print_warning "Could not determine memory size on Windows. Continuing..."
+            print_success "System memory: ${MEMORY_GB}GB"
         fi
     else
-        # Linux/macOS
-        if command -v free &> /dev/null; then
-            MEMORY_GB=$(free -g | awk '/^Mem:/{print $2}')
-            if [ "$MEMORY_GB" -lt 8 ]; then
-                print_warning "System has less than 8GB RAM. Performance may be limited."
-            else
-                print_success "System memory: ${MEMORY_GB}GB"
-            fi
-        else
-            print_warning "Could not determine memory size. Continuing..."
-        fi
+        print_warning "Could not determine memory size. Continuing..."
     fi
     
     print_success "System requirements check completed."
@@ -129,16 +121,29 @@ download_models() {
     if [ ! -f "models/yolov8x.pt" ]; then
         print_warning "YOLOv8x model not found. Downloading..."
         mkdir -p models
-        if command -v wget &> /dev/null; then
-            wget -O models/yolov8x.pt https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8x.pt
-        elif command -v curl &> /dev/null; then
+        
+        # Try different download methods
+        if command -v curl &> /dev/null; then
+            print_status "Downloading with curl..."
             curl -L -o models/yolov8x.pt https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8x.pt
+        elif command -v wget &> /dev/null; then
+            print_status "Downloading with wget..."
+            wget -O models/yolov8x.pt https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8x.pt
         else
-            print_error "Neither wget nor curl found. Please download yolov8x.pt manually to models/ directory"
-            print_status "Download URL: https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8x.pt"
+            print_error "Neither curl nor wget found."
+            print_status "Please download yolov8x.pt manually:"
+            print_status "1. Go to: https://github.com/ultralytics/assets/releases/download/v0.0.0/yolov8x.pt"
+            print_status "2. Save the file to: models/yolov8x.pt"
+            print_status "3. Run this script again"
             exit 1
         fi
-        print_success "YOLOv8x model downloaded successfully."
+        
+        if [ -f "models/yolov8x.pt" ]; then
+            print_success "YOLOv8x model downloaded successfully."
+        else
+            print_error "Download failed. Please check your internet connection and try again."
+            exit 1
+        fi
     else
         print_success "YOLOv8x model already exists."
     fi
@@ -153,22 +158,24 @@ deploy_services() {
     export STAGE=1
     export GPU_ENABLED=$GPU_ENABLED
     
-    # Build and start services
+    # For Windows, we'll start with just the backend first
     if [ "$GPU_ENABLED" = true ]; then
         print_status "Starting services with GPU support..."
-        docker-compose up --build -d
+        print_status "Note: GPU support on Windows may require additional configuration"
     else
         print_status "Starting services in CPU mode..."
-        # Remove GPU-specific configurations
-        if is_windows; then
-            # Windows - use sed equivalent or manual edit
-            print_warning "Please manually remove GPU configuration from docker-compose.yml for CPU mode"
-            docker-compose up --build -d
-        else
-            sed -i '/deploy:/,/capabilities:/d' docker-compose.yml
-            docker-compose up --build -d
-        fi
     fi
+    
+    # Start backend first
+    print_status "Starting backend service..."
+    docker-compose up --build -d ps05-backend
+    
+    # Wait a bit for backend to start
+    sleep 10
+    
+    # Start other services
+    print_status "Starting remaining services..."
+    docker-compose up --build -d
     
     print_success "Services started successfully."
 }
@@ -179,7 +186,7 @@ wait_for_services() {
     
     # Wait for backend
     print_status "Waiting for backend service..."
-    timeout=120
+    timeout=180  # Increased timeout for Windows
     counter=0
     
     while ! curl -f http://localhost:8000/api/v1/health &> /dev/null; do
@@ -187,10 +194,14 @@ wait_for_services() {
             print_error "Backend service failed to start within $timeout seconds."
             print_status "Checking Docker logs..."
             docker-compose logs ps05-backend
+            print_status "Troubleshooting tips:"
+            print_status "1. Make sure Docker Desktop has enough resources (8GB+ RAM)"
+            print_status "2. Check if port 8000 is available"
+            print_status "3. Try restarting Docker Desktop"
             exit 1
         fi
-        sleep 2
-        counter=$((counter + 2))
+        sleep 3
+        counter=$((counter + 3))
         echo -n "."
     done
     echo ""
@@ -198,7 +209,7 @@ wait_for_services() {
     
     # Wait for frontend
     print_status "Waiting for frontend service..."
-    timeout=60
+    timeout=90
     counter=0
     
     while ! curl -f http://localhost:19000 &> /dev/null; do
@@ -206,8 +217,8 @@ wait_for_services() {
             print_warning "Frontend service may not be ready yet."
             break
         fi
-        sleep 2
-        counter=$((counter + 2))
+        sleep 3
+        counter=$((counter + 3))
         echo -n "."
     done
     echo ""
@@ -293,12 +304,20 @@ display_info() {
     echo ""
     echo "🎯 Ready for PS-05 Competition Evaluation!"
     echo "Submission Deadline: 5 November 2025"
+    
+    echo ""
+    echo "💡 Windows Tips:"
+    echo "================"
+    echo "• Keep Docker Desktop running in background"
+    echo "• If services fail, try restarting Docker Desktop"
+    echo "• Check Windows Defender Firewall for port blocking"
+    echo "• Ensure Docker Desktop has enough resources allocated"
 }
 
 # Main deployment function
 main() {
-    echo "Starting PS-05 Competition Deployment..."
-    echo "======================================"
+    echo "Starting PS-05 Competition Deployment (Windows)..."
+    echo "================================================"
     
     check_requirements
     create_directories
