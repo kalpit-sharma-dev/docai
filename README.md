@@ -122,7 +122,7 @@ python test_stage1.py
 python scripts/train_stage1.py --data data/train --output outputs/stage1
 
 # Run inference
-python ps05.py infer --input test_image.png --output results/ --stage 1
+python ps05.py infer --input image.png --output results/ --stage 1
 ```
 
 #### 📋 Stage 1 Requirements Met
