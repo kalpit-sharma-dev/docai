@@ -17,6 +17,11 @@ from pathlib import Path
 from typing import Dict, List
 import torch
 import shutil
+import sys
+import os
+
+# Add the parent directory to the Python path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from scripts.prepare_dataset import prepare_dataset
 from src.models.layout_detector import LayoutDetector
@@ -46,6 +51,18 @@ def train_stage1_model(config: Dict, dataset_yaml: str, output_dir: str) -> bool
         True if training successful, False otherwise
     """
     try:
+        # Check GPU availability
+        if torch.cuda.is_available():
+            device = torch.device('cuda:0')
+            gpu_name = torch.cuda.get_device_name(0)
+            gpu_memory = torch.cuda.get_device_properties(0).total_memory / 1e9
+            logger.info(f"🚀 GPU Available: {gpu_name}")
+            logger.info(f"💾 GPU Memory: {gpu_memory:.2f} GB")
+            logger.info(f"🔧 CUDA Version: {torch.version.cuda}")
+        else:
+            device = torch.device('cpu')
+            logger.warning("⚠️  CUDA not available, using CPU for training")
+        
         # Initialize layout detector
         detector = LayoutDetector()
         
@@ -54,10 +71,17 @@ def train_stage1_model(config: Dict, dataset_yaml: str, output_dir: str) -> bool
         batch_size = config.get('training', {}).get('batch_size', 8)
         learning_rate = config.get('training', {}).get('learning_rate', 0.001)
         
-        logger.info(f"Starting Stage 1 training for {epochs} epochs")
-        logger.info(f"Dataset: {dataset_yaml}")
-        logger.info(f"Batch size: {batch_size}, Learning rate: {learning_rate}")
-        logger.info(f"Output directory: {output_dir}")
+        # Adjust batch size based on GPU memory
+        if torch.cuda.is_available():
+            if gpu_memory < 6:  # RTX 2070 has 8GB, but we'll be conservative
+                batch_size = min(batch_size, 4)
+                logger.info(f"📊 Adjusted batch size to {batch_size} for GPU memory constraints")
+        
+        logger.info(f"🎯 Starting Stage 1 training for {epochs} epochs")
+        logger.info(f"📁 Dataset: {dataset_yaml}")
+        logger.info(f"⚙️  Batch size: {batch_size}, Learning rate: {learning_rate}")
+        logger.info(f"💻 Output directory: {output_dir}")
+        logger.info(f"🖥️  Device: {device}")
         
         # Train the model
         results = detector.train(
@@ -69,14 +93,14 @@ def train_stage1_model(config: Dict, dataset_yaml: str, output_dir: str) -> bool
         )
         
         if results is not None:
-            logger.info("Stage 1 training completed successfully!")
+            logger.info("✅ Stage 1 training completed successfully!")
             return True
         else:
-            logger.error("Stage 1 training failed!")
+            logger.error("❌ Stage 1 training failed!")
             return False
             
     except Exception as e:
-        logger.error(f"Stage 1 training failed: {e}")
+        logger.error(f"❌ Stage 1 training failed: {e}")
         return False
 
 def validate_stage1_model(config: Dict, dataset_yaml: str, model_path: str) -> Dict:

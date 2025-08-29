@@ -1,138 +1,73 @@
-# PS-05 Intelligent Multilingual Document Understanding Configuration
-
-# System settings
+# PS-05 Configuration for GPU Training (RTX 2070)
 system:
-  name: "PS-05 Document Understanding System"
-  version: "1.0.0"
-  stage: 1  # 1: Layout, 2: OCR+LangID, 3: NL Generation
-  target_languages: ["en", "hi", "ur", "ar", "ne", "fa"]
-  supported_scripts: ["latin", "devanagari", "arabic", "persian"]
+  target_languages: ['en', 'hi', 'ur', 'ar', 'ne', 'fa']
+  gpu_enabled: true
+  device: 'cuda:0'
 
-# Model configurations
 models:
   layout:
-    type: "yolo"  # or "detr", "faster_rcnn"
-    backbone: "yolov8x"
-    classes: ["Background", "Text", "Title", "List", "Table", "Figure"]
+    classes: ['Background', 'Text', 'Title', 'List', 'Table', 'Figure']
     confidence_threshold: 0.5
     nms_threshold: 0.45
     input_size: [640, 640]
-    
-  ocr:
-    type: "easyocr"
-    languages: ["en", "hi", "ur", "ar", "ne", "fa"]
-    gpu: true
-    paragraph: false  # line-level detection
-    
-  langid:
-    type: "script_classifier"
-    model_path: "models/langid_model.pkl"
-    confidence_threshold: 0.7
+    backbone: 'yolov8x'
+    gpu_memory_optimization: true
 
-# Preprocessing settings
+  ocr:
+    engine: 'easyocr'
+    languages: ['en', 'hi', 'ur', 'ar', 'ne', 'fa']
+    gpu_enabled: true
+
+  langid:
+    confidence_threshold: 0.7
+    method: 'ensemble'
+
+training:
+  epochs: 100
+  batch_size: 4  # Optimized for RTX 2070 8GB memory
+  learning_rate: 0.001
+  optimizer: 'Adam'
+  scheduler: 'CosineAnnealingLR'
+  warmup_epochs: 5
+  gpu_memory_fraction: 0.9
+  
+  # Data augmentation
+  augmentation:
+    enabled: true
+    rotation: 15
+    brightness: 0.2
+    contrast: 0.2
+    noise: 0.1
+    blur: 0.1
+
 preprocessing:
   deskew:
     enabled: true
     max_angle: 15.0
-    
+    method: 'auto'
+  
   denoise:
     enabled: true
-    method: "bilateral"  # or "gaussian", "median"
-    
+    method: 'bilateral'
+    strength: 'medium'
+  
   resize:
     max_width: 2480
     max_height: 3508
     preserve_aspect: true
-    
+  
   normalization:
     enabled: true
-    method: "clahe"  # or "histogram_equalization"
+    method: 'clahe'
+    target_range: [0, 255]
 
-# Training settings
-training:
-  batch_size: 8
-  learning_rate: 0.001
-  epochs: 100
-  early_stopping_patience: 10
-  mixed_precision: true
-  
-  augmentation:
-    rotation: [-15, 15]
-    scale: [0.8, 1.2]
-    brightness: [0.8, 1.2]
-    contrast: [0.8, 1.2]
-    noise: 0.05
-    blur: 0.1
-
-# Evaluation settings
 evaluation:
-  metrics:
-    layout: ["mAP", "mAP50", "mAP75"]
-    ocr: ["CER", "WER"]
-    langid: ["accuracy", "precision", "recall", "f1"]
-    nl_generation: ["bleurt", "bert_score", "sacrebleu"]
-    
-  iou_thresholds: [0.5, 0.75]
-  confidence_thresholds: [0.3, 0.5, 0.7]
+  iou_threshold: 0.5
+  confidence_threshold: 0.5
+  metrics: ['mAP', 'precision', 'recall', 'f1']
 
-# Output settings
 output:
-  format: "json"
-  include_bbox: true
+  format: 'json'
   include_confidence: true
-  include_language: true
-  include_text: true
-  
-  json_schema:
-    version: "1.0"
-    required_fields: ["page", "size", "elements"]
-    optional_fields: ["text_lines", "tables", "figures", "charts", "maps"]
-
-# Performance settings
-performance:
-  gpu_memory_limit: 12  # GB
-  cpu_threads: 8
-  batch_inference: true
-  max_batch_size: 4
-  
-  optimization:
-    tensorrt: false
-    onnx: false
-    quantization: false
-
-# Data paths
-paths:
-  data_root: "data"
-  models_dir: "models"
-  checkpoints_dir: "checkpoints"
-  logs_dir: "logs"
-  outputs_dir: "outputs"
-  
-  datasets:
-    train: "data/train"
-    val: "data/val"
-    test: "data/test"
-    mock: "data/mock"
-    shortlist: "data/shortlist"
-
-# API settings
-api:
-  host: "0.0.0.0"
-  port: 8000
-  workers: 4
-  timeout: 300
-  max_file_size: 50  # MB
-  
-  cors:
-    enabled: true
-    origins: ["*"]
-    methods: ["GET", "POST", "PUT", "DELETE"]
-    headers: ["*"]
-
-# Logging
-logging:
-  level: "INFO"
-  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
-  file: "logs/ps05.log"
-  max_size: 100  # MB
-  backup_count: 5 
+  include_bbox: true
+  include_class: true 

@@ -28,6 +28,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+ps05_env/
 
 # IDE
 .vscode/

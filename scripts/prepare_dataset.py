@@ -168,9 +168,18 @@ def prepare_dataset(data_dir: str, output_dir: str, train_ratio: float = 0.7,
         image_extensions = ['.jpg', '.jpeg', '.png', '.bmp', '.tiff']
         image_files = []
         
-        for ext in image_extensions:
-            image_files.extend(data_path.glob(f"*{ext}"))
-            image_files.extend(data_path.glob(f"*{ext.upper()}"))
+        # Check if we have enhanced processed structure (images/ subdirectory)
+        images_subdir = data_path / "images"
+        if images_subdir.exists():
+            # Enhanced processed structure
+            for ext in image_extensions:
+                image_files.extend(images_subdir.glob(f"*{ext}"))
+                image_files.extend(images_subdir.glob(f"*{ext.upper()}"))
+        else:
+            # Direct structure
+            for ext in image_extensions:
+                image_files.extend(data_path.glob(f"*{ext}"))
+                image_files.extend(data_path.glob(f"*{ext.upper()}"))
         
         if not image_files:
             logger.error(f"No image files found in {data_dir}")
@@ -208,7 +217,14 @@ def prepare_dataset(data_dir: str, output_dir: str, train_ratio: float = 0.7,
             
             for image_file in files:
                 # Find corresponding JSON file
-                json_file = image_file.with_suffix('.json')
+                # Check if we have enhanced processed structure (annotations/ subdirectory)
+                annotations_subdir = data_path / "annotations"
+                if annotations_subdir.exists():
+                    # Enhanced processed structure
+                    json_file = annotations_subdir / f"{image_file.stem}.json"
+                else:
+                    # Direct structure
+                    json_file = image_file.with_suffix('.json')
                 
                 if json_file.exists():
                     annotations = load_annotations(str(json_file))
