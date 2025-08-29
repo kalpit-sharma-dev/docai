@@ -16,7 +16,8 @@ models:
   ocr:
     engine: 'easyocr'
     languages: ['en', 'hi', 'ur', 'ar', 'ne', 'fa']
-    gpu_enabled: true
+    gpu: true
+    paragraph: false
 
   langid:
     confidence_threshold: 0.7

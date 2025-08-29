@@ -38,6 +38,13 @@ class PS05Pipeline:
         
         # Initialize models
         self.layout_detector = LayoutDetector(config_path)
+        
+        # Load the trained model if available
+        trained_model_path = "outputs/stage1_enhanced/training/layout_detector3/weights/best.pt"
+        if Path(trained_model_path).exists():
+            self.layout_detector.load_model(trained_model_path)
+            logger.info(f"Loaded trained model from {trained_model_path}")
+        
         self.ocr_engine = OCREngine(config_path)
         self.lang_classifier = LanguageClassifier(config_path)
         self.nl_generator = NLGenerator(config_path)
