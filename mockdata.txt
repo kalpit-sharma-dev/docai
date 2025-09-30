@@ -1,0 +1,89 @@
+Got it ✅ You want to generate realistic mock bank account statements with both credit and debit transactions for the last 6 months, covering all categories I listed earlier (salary, EMI, shopping, utilities, investments, cash withdrawals, etc.).
+
+Here’s a ready-to-use prompt you can feed into any LLM (like me, or another generator) to create structured mock account statement data:
+
+
+---
+
+📝 Prompt for Generating Mock Bank Statement Data
+
+Prompt:
+Generate a realistic mock bank account statement for the last 6 months (from today’s date).
+The data should:
+
+1. Structure:
+
+Date (DD-MM-YYYY)
+
+Description (merchant/vendor/transaction type)
+
+Category (Salary, Food, Travel, Shopping, EMI, Utilities, Investment, Cash Withdrawal, Transfer, Misc.)
+
+Transaction Type (Credit/Debit)
+
+Amount (₹, in realistic ranges)
+
+Balance (updated after each transaction)
+
+
+
+2. Constraints:
+
+Opening balance: ₹1,00,000
+
+Salary credited every month (between ₹1,80,000 – ₹2,60,000).
+
+Recurring EMIs (home loan, car loan, personal loan).
+
+Regular debits for groceries, restaurants, UPI payments, electricity bill, insurance, shopping, travel.
+
+At least one investment SIP/Mutual Fund debit every month.
+
+Include ATM withdrawals, refunds, and random transfers.
+
+Ensure both debit and credit transactions are present.
+
+Data should look authentic like a real bank statement.
+
+
+
+3. Volume:
+
+Around 40–60 transactions per month (mix of small daily spends + big monthly spends).
+
+Cover full 6 months of history.
+
+
+
+4. Output Format:
+
+Present as a CSV table with headers:
+
+Date, Description, Category, Type, Amount (INR), Balance (INR)
+
+Ensure balances update correctly after each transaction.
+
+
+
+
+
+---
+
+👉 Example snippet (the generator should expand this for all 6 months):
+
+Date, Description, Category, Type, Amount (INR), Balance (INR)
+01-04-2025, Opening Balance, Balance, Credit, 100000.00, 100000.00
+01-04-2025, Salary - HDFC Bank, Salary, Credit, 220000.00, 320000.00
+03-04-2025, Amazon Purchase, Shopping, Debit, 4599.00, 315401.00
+04-04-2025, Electricity Bill - Tata Power, Utilities, Debit, 2350.00, 313051.00
+05-04-2025, SIP - HDFC Mutual Fund, Investment, Debit, 10000.00, 303051.00
+06-04-2025, Swiggy Order, Food, Debit, 899.00, 302152.00
+08-04-2025, Car Loan EMI, EMI, Debit, 18500.00, 283652.00
+10-04-2025, UPI Transfer from Friend, Transfer, Credit, 2500.00, 286152.00
+12-04-2025, ATM Cash Withdrawal, Cash Withdrawal, Debit, 5000.00, 281152.00
+
+
+---
+
+Would you like me to actually generate a full 6-month mock dataset in CSV (around 250–300 transactions) right now so you can start testing your AI agent?
+
